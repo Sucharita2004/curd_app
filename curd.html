@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="form">
+
+            <h1>Product Manager</h1>
+
+        <!-- FORM -->
+        <form onsubmit="event.preventDefault(); addProducts();" class="form-box">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="productName" placeholder="Enter product name">
+            </div>
+
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" id="productPrice" placeholder="Enter price">
+            </div>
+
+            <button type="submit" class="submit-btn">Add / Update</button>
+        </form>
+        </div>
+
+        
+
+        <div class="product-section">
+            <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()"
+                class="search-box">
+
+            <h2>Stored Products</h2>
+            <ul id="productList"></ul>
+        </div>
+
+    </div>
+
+    <script>
+        let editId = null;
+
+        window.onload = function () {
+            displayProducts();
+        }
+
+        function addProducts() {
+            let name = document.getElementById("productName").value;
+            let price = document.getElementById("productPrice").value;
+
+            if (!name || !price) {
+                alert("Please enter product name and price!");
+                return;
+            }
+
+            let products = JSON.parse(localStorage.getItem("products")) || [];
+
+            if (editId) {
+                products = products.map(p => {
+                    if (p.id === editId) {
+                        return { ...p, name: name, price: Number(price) }
+                    }
+                    return p;
+                });
+                editId = null;
+            } else {
+                let newProduct = {
+                    id: Date.now(),
+                    name: name,
+                    price: Number(price),
+                };
+                products.push(newProduct);
+            }
+
+            localStorage.setItem("products", JSON.stringify(products));
+
+            document.getElementById("productName").value = "";
+            document.getElementById("productPrice").value = "";
+
+            displayProducts();
+        }
+
+        function displayProducts(item = null) {
+            let productList = document.getElementById("productList");
+            productList.innerHTML = "";
+
+            let products = item || JSON.parse(localStorage.getItem("products")) || [];
+
+            products.forEach((p) => {
+                let li = document.createElement("li");
+                li.innerHTML = `
+                <span>${p.name} - ₹ ${p.price}</span>
+                <div>
+                    <button onclick="editProduct(${p.id})">Edit</button>
+                    <button onclick="deleteProduct(${p.id})">Delete</button>
+                </div>
+            `;
+                productList.appendChild(li);
+            });
+        }
+
+        function searchProducts() {
+            let searchValue = document.getElementById("searchInput").value.toLowerCase();
+            let products = JSON.parse(localStorage.getItem("products")) || [];
+
+            let filteredProducts = products.filter(p =>
+                p.name.toLowerCase().includes(searchValue)
+            );
+
+            displayProducts(filteredProducts);
+        }
+
+        function editProduct(id) {
+            let products = JSON.parse(localStorage.getItem("products")) || [];
+            let product = products.find(p => p.id === id);
+
+            document.getElementById("productName").value = product.name;
+            document.getElementById("productPrice").value = product.price;
+
+            editId = id;
+        }
+
+        function deleteProduct(id) {
+            let products = JSON.parse(localStorage.getItem("products")) || [];
+            let updatedProducts = products.filter(p => p.id !== id);
+
+            localStorage.setItem("products", JSON.stringify(updatedProducts));
+            displayProducts();
+        }
+    </script>
+
+</body>
+
+</html>
