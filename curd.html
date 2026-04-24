@@ -11,27 +11,27 @@
 <body>
 
     <div class="container">
+        <h1>CRUD   APP </h1>
         <div class="form">
+            <h2>Product Manager</h2>
 
-            <h1>Product Manager</h1>
+            <!-- FORM -->
+            <form onsubmit="event.preventDefault(); addProducts();" class="form-box">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="productName" placeholder="Enter product name">
+                </div>
 
-        <!-- FORM -->
-        <form onsubmit="event.preventDefault(); addProducts();" class="form-box">
-            <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" id="productName" placeholder="Enter product name">
-            </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" id="productPrice" placeholder="Enter price">
+                </div>
 
-            <div class="form-group">
-                <label>Price</label>
-                <input type="number" id="productPrice" placeholder="Enter price">
-            </div>
-
-            <button type="submit" class="submit-btn">Add / Update</button>
-        </form>
+                <button type="submit" class="submit-btn">Add / Update Products</button>
+            </form>
         </div>
 
-        
+
 
         <div class="product-section">
             <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()"
